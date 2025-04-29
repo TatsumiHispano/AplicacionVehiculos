@@ -78,12 +78,17 @@ Se crea una instancia concreta de acceso a datos según la configuración.
 
 Acción	Método	Descripción
 Crear	InsertAsync()	Agrega un nuevo vehículo
+
 Leer	GetAllAsync() / GetByIdAsync()	Consulta vehículos existentes
+
 Actualizar	UpdateAsync()	Modifica los datos de un vehículo existente
+
 Eliminar	DeleteAsync()	Borra un vehículo por su matrícula
+
 Después de cada operación, los cambios se persisten automáticamente en el medio de almacenamiento correspondiente.
 
 ✅ Ventajas del Sistema
+
 Flexibilidad: Soporte para múltiples formas de almacenamiento.
 
 Desacoplamiento: Separación entre lógica de negocio y persistencia de datos.
@@ -95,4 +100,5 @@ Extensibilidad: Se pueden agregar nuevos formatos de almacenamiento fácilmente.
 Asincronía: Operaciones no bloqueantes que mejoran la eficiencia general.
 
 🧩 Conclusión
+
 Este sistema ofrece una solución robusta y adaptable para la gestión de vehículos. Su arquitectura desacoplada, unida al uso de patrones de diseño y asincronía, lo convierte en un proyecto ideal para aplicaciones de pequeña a gran escala, fácilmente integrable en entornos modernos.
