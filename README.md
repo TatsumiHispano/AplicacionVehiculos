@@ -1,94 +1,98 @@
-Este proyecto es un sistema que gestiona vehículos utilizando una capa de acceso a datos persistente.
-Permite manejar la información de los vehículos de forma flexible, con soporte para diferentes métodos de almacenamiento como memoria, archivos de texto, archivos binarios y archivos JSON.
+🚗 Sistema de Gestión de Vehículos
+Este proyecto es una aplicación modular para la gestión de vehículos con soporte para distintos métodos de almacenamiento persistente, diseñada con principios de desacoplamiento, extensibilidad y eficiencia.
 
-El acceso a los datos se maneja mediante una interfaz común que facilita el cambio entre diferentes métodos de persistencia sin alterar el resto de la aplicación.
+Permite almacenar, consultar, modificar y eliminar información de vehículos usando diferentes formatos: memoria, archivos de texto, archivos binarios y JSON.
 
-Estructura y Componentes
-AccesoDatosAbstract (Clase Abstracta)
+🧱 Arquitectura y Componentes
+🔌 Capa de Acceso a Datos
+El acceso a los datos se maneja mediante una clase abstracta común, lo que permite cambiar fácilmente el método de persistencia sin afectar el resto del sistema.
 
-AccesoDatosAbstract es una clase abstracta que define las operaciones comunes para acceder y manipular los datos de los vehículos. Las operaciones incluyen:
+AccesoDatosAbstract
+Define las operaciones comunes de acceso:
 
-GetAllAsync(): Obtiene todos los vehículos.
+GetAllAsync() – Obtiene todos los vehículos.
 
-GetByIdAsync(string matricula): Obtiene un vehículo según su matrícula.
+GetByIdAsync(string matricula) – Obtiene un vehículo por matrícula.
 
-InsertAsync(Vehiculo vehiculo): Inserta un nuevo vehículo.
+InsertAsync(Vehiculo vehiculo) – Inserta un nuevo vehículo.
 
-UpdateAsync(Vehiculo vehiculo): Actualiza los datos de un vehículo existente.
+UpdateAsync(Vehiculo vehiculo) – Actualiza un vehículo existente.
 
-DeleteAsync(Vehiculo vehiculo): Elimina un vehículo.
+DeleteAsync(Vehiculo vehiculo) – Elimina un vehículo.
 
-Esta clase define la interfaz para todas las implementaciones de acceso a datos.
-
-Implementaciones Concretas
-Existen varias implementaciones de AccesoDatosAbstract, cada una encargada de almacenar los vehículos de diferente manera:
-
+📦 Implementaciones
 AccesoDatosMemoria
-Almacena los vehículos en memoria, lo que significa que los datos se pierden cuando la aplicación termina. Es útil para operaciones rápidas de prueba o en escenarios donde la persistencia no es necesaria.
+Almacena los datos en memoria. Ideal para pruebas o entornos donde no se requiere persistencia.
 
 AccesoDatosFicheroTexto
-Guarda los vehículos en un archivo de texto plano. Cada línea del archivo contiene los datos de un vehículo en un formato delimitado por punto y coma (;).
-Este enfoque es sencillo pero no muy eficiente ni estructurado.
+Utiliza un archivo de texto plano con formato delimitado por ;.
 
 AccesoDatosFicheroBinario
-Utiliza la serialización binaria para almacenar los vehículos. Este enfoque es más eficiente en términos de almacenamiento y velocidad en comparación con los archivos de texto.
-Los datos se guardan en un archivo binario que puede ser leído y escrito de manera más rápida y compacta.
+Emplea serialización binaria para una mayor eficiencia de lectura/escritura.
 
 AccesoDatosFicheroJSON
-Almacena los vehículos en un archivo JSON. JSON es un formato estructurado, fácil de leer y ampliamente utilizado. 
-Es útil si se necesita compartir o integrar los datos con otros sistemas que también usen este formato.
+Usa formato JSON, ideal para interoperabilidad con otros sistemas.
 
-Patrón Singleton
-El proyecto utiliza el patrón Singleton para asegurar que haya solo una instancia de la clase encargada de gestionar el acceso a los datos.
-La clase AccesoDatosAbstract tiene un método estático GetInstance(), que devuelve la única instancia según la configuración proporcionada en el archivo AppConfig.
-Dependiendo del valor de ModoAccesoDatos (que puede ser "MEMORIA", "FICHERO_TEXTO", "FICHERO_BINARIO" o "FICHERO_JSON"), el sistema creará la instancia adecuada (por ejemplo, AccesoDatosMemoria si el modo es "MEMORIA").
+🧠 Patrón Singleton y Configuración Dinámica
+El sistema emplea el patrón Singleton para asegurar que solo exista una instancia de acceso a datos. El método estático GetInstance() de AccesoDatosAbstract selecciona la implementación concreta basándose en el valor de ModoAccesoDatos definido en el archivo de configuración AppConfig.
 
-Configuración Dinámica
-El modo de acceso a los datos se puede cambiar dinámicamente mediante la configuración del archivo AppConfig.
-Esta flexibilidad permite a la aplicación adaptarse a diferentes necesidades sin tener que modificar el código base.
+🧾 Configuración (AppConfig)
+Define:
 
-Operaciones Asincrónicas
-Todas las operaciones de acceso a los datos son asincrónicas. Se utilizan tareas (Task) y async/await para permitir la ejecución de operaciones sin bloquear el hilo principal.
-Esto mejora la eficiencia y la capacidad de respuesta de la aplicación, especialmente cuando se trabaja con archivos o bases de datos de gran tamaño.
+Tipo de almacenamiento: MEMORIA, FICHERO_TEXTO, FICHERO_BINARIO, FICHERO_JSON.
 
-Clases y Métodos Auxiliares
+Rutas de los archivos si aplica.
 
-Vehiculo: Representa la entidad de un vehículo, con propiedades como matrícula, marca, número de kilómetros, fecha de matriculación, descripción, precio, propietario y DNI del propietario.
+Este enfoque permite cambiar el tipo de persistencia sin modificar el código fuente.
 
-AppConfig: Configura las rutas de los archivos y el tipo de acceso a los datos (en memoria, texto, binario o JSON).
+⚙️ Asincronía
+Todas las operaciones de acceso a datos son asincrónicas utilizando async/await. Esto evita el bloqueo del hilo principal y mejora el rendimiento, especialmente con archivos o datos extensos.
 
-Flujo de Trabajo
+🚘 Entidades y Clases Auxiliares
+Vehiculo
+Representa un vehículo con las siguientes propiedades:
 
-Inicialización
-Cuando la aplicación se inicia, el sistema lee el archivo de configuración (AppConfig) para determinar qué modo de acceso a datos se debe utilizar.
-A continuación, crea la instancia correspondiente (por ejemplo, AccesoDatosFicheroTexto o AccesoDatosFicheroBinario) y se conecta al almacenamiento elegido.
-Dependiendo del tipo de almacenamiento, los datos de los vehículos pueden cargarse en memoria o leerse desde el archivo correspondiente.
+Matrícula
 
-Operaciones CRUD
-Los usuarios pueden interactuar con la aplicación mediante operaciones CRUD (crear, leer, actualizar y eliminar) para gestionar los vehículos:
+Marca
 
-Leer: GetAllAsync() devuelve todos los vehículos almacenados. GetByIdAsync() devuelve un vehículo por su matrícula.
+Kilometraje
 
-Crear: InsertAsync() agrega un nuevo vehículo a la colección.
+Fecha de matriculación
 
-Actualizar: UpdateAsync() reemplaza un vehículo existente con los nuevos datos.
+Descripción
 
-Eliminar: DeleteAsync() elimina un vehículo de la colección.
+Precio
 
-Persistencia
-Los cambios realizados en la colección de vehículos se guardan automáticamente en el almacenamiento correspondiente después de cada operación de inserción, actualización o eliminación.
+Propietario
 
-Ventajas
-Flexibilidad: El sistema soporta varios tipos de almacenamiento (memoria, texto, binario y JSON), lo que permite elegir el tipo de persistencia más adecuado según las necesidades del proyecto.
+DNI del propietario
 
-Desacoplamiento: Gracias al patrón de diseño Singleton y la separación de la interfaz (AccesoDatosAbstract) y las implementaciones concretas, el código es fácilmente extensible y adaptable.
+🔁 Flujo de Trabajo
+1. Inicialización
+Al iniciar, se lee AppConfig para determinar el tipo de almacenamiento.
 
-Escalabilidad: La capacidad de elegir entre diferentes tipos de almacenamiento permite que el sistema escale según el tamaño de los datos y los requerimientos de rendimiento.
+Se crea una instancia concreta de acceso a datos según la configuración.
 
-Asincronía: El uso de operaciones asincrónicas mejora la eficiencia del sistema, especialmente cuando se interactúa con archivos o bases de datos más grandes.
+2. Operaciones CRUD
 
-Conclusión
+Acción	Método	Descripción
+Crear	InsertAsync()	Agrega un nuevo vehículo
+Leer	GetAllAsync() / GetByIdAsync()	Consulta vehículos existentes
+Actualizar	UpdateAsync()	Modifica los datos de un vehículo existente
+Eliminar	DeleteAsync()	Borra un vehículo por su matrícula
+Después de cada operación, los cambios se persisten automáticamente en el medio de almacenamiento correspondiente.
 
-Este proyecto proporciona una solución flexible y escalable para gestionar vehículos en una aplicación, con múltiples opciones de almacenamiento y acceso a datos.
-Gracias al patrón Singleton, la arquitectura está diseñada para ser fácilmente extensible y adaptable a futuras necesidades.
-La implementación de operaciones asincrónicas mejora la eficiencia del sistema, haciendo que sea adecuado para proyectos de cualquier tamaño.
+✅ Ventajas del Sistema
+Flexibilidad: Soporte para múltiples formas de almacenamiento.
+
+Desacoplamiento: Separación entre lógica de negocio y persistencia de datos.
+
+Escalabilidad: Elige el tipo de almacenamiento según el tamaño o requerimientos del sistema.
+
+Extensibilidad: Se pueden agregar nuevos formatos de almacenamiento fácilmente.
+
+Asincronía: Operaciones no bloqueantes que mejoran la eficiencia general.
+
+🧩 Conclusión
+Este sistema ofrece una solución robusta y adaptable para la gestión de vehículos. Su arquitectura desacoplada, unida al uso de patrones de diseño y asincronía, lo convierte en un proyecto ideal para aplicaciones de pequeña a gran escala, fácilmente integrable en entornos modernos.
