@@ -1,103 +1,119 @@
-🚗 Sistema de Gestión de Vehículos
-Este proyecto es una aplicación modular para la gestión de vehículos con soporte para distintos métodos de almacenamiento persistente, diseñada con principios de desacoplamiento, extensibilidad y eficiencia.
+# 🚗 Sistema de Gestión de Vehículos
 
-Permite almacenar, consultar, modificar y eliminar información de vehículos usando diferentes formatos: memoria, archivos de texto, archivos binarios y JSON.
+**Sistema de Gestión de Vehículos** es una aplicación modular desarrollada en C# que permite administrar información de vehículos utilizando distintos métodos de almacenamiento persistente. Su diseño se basa en principios de **desacoplamiento**, **extensibilidad** y **eficiencia**, ideal para proyectos escalables y fácilmente adaptables.
 
-🧱 Arquitectura y Componentes
-🔌 Capa de Acceso a Datos
-El acceso a los datos se maneja mediante una clase abstracta común, lo que permite cambiar fácilmente el método de persistencia sin afectar el resto del sistema.
+---
 
-AccesoDatosAbstract
-Define las operaciones comunes de acceso:
+## 🧱 Arquitectura y Componentes
 
-GetAllAsync() – Obtiene todos los vehículos.
+### 🔌 Capa de Acceso a Datos
 
-GetByIdAsync(string matricula) – Obtiene un vehículo por matrícula.
+La persistencia de datos se maneja a través de una clase abstracta común que define las operaciones estándar, lo que permite cambiar el método de almacenamiento sin modificar el resto del sistema.
 
-InsertAsync(Vehiculo vehiculo) – Inserta un nuevo vehículo.
+#### `AccesoDatosAbstract`
 
-UpdateAsync(Vehiculo vehiculo) – Actualiza un vehículo existente.
+Métodos principales (todos asincrónicos):
 
-DeleteAsync(Vehiculo vehiculo) – Elimina un vehículo.
+- `GetAllAsync()` – Obtiene todos los vehículos.
+- `GetByIdAsync(string matricula)` – Busca un vehículo por matrícula.
+- `InsertAsync(Vehiculo vehiculo)` – Agrega un nuevo vehículo.
+- `UpdateAsync(Vehiculo vehiculo)` – Actualiza un vehículo existente.
+- `DeleteAsync(Vehiculo vehiculo)` – Elimina un vehículo.
 
-📦 Implementaciones
-AccesoDatosMemoria
-Almacena los datos en memoria. Ideal para pruebas o entornos donde no se requiere persistencia.
+---
 
-AccesoDatosFicheroTexto
-Utiliza un archivo de texto plano con formato delimitado por ;.
+### 📦 Implementaciones de Persistencia
 
-AccesoDatosFicheroBinario
-Emplea serialización binaria para una mayor eficiencia de lectura/escritura.
+| Implementación | Descripción |
+|----------------|-------------|
+| `AccesoDatosMemoria` | Almacena los datos en memoria. Útil para pruebas o entornos temporales. |
+| `AccesoDatosFicheroTexto` | Utiliza archivos de texto plano (`.txt`) con delimitadores `;`. |
+| `AccesoDatosFicheroBinario` | Serializa objetos binariamente para mayor eficiencia de lectura/escritura. |
+| `AccesoDatosFicheroJSON` | Utiliza formato JSON para mejor interoperabilidad con otros sistemas. |
 
-AccesoDatosFicheroJSON
-Usa formato JSON, ideal para interoperabilidad con otros sistemas.
+---
 
-🧠 Patrón Singleton y Configuración Dinámica
-El sistema emplea el patrón Singleton para asegurar que solo exista una instancia de acceso a datos. El método estático GetInstance() de AccesoDatosAbstract selecciona la implementación concreta basándose en el valor de ModoAccesoDatos definido en el archivo de configuración AppConfig.
+### 🧠 Patrón Singleton + Configuración Dinámica
 
-🧾 Configuración (AppConfig)
-Define:
+- Se implementa el **patrón Singleton** para garantizar que solo exista una instancia del acceso a datos.
+- El método `GetInstance()` selecciona dinámicamente la implementación según el valor definido en el archivo `AppConfig`.
 
-Tipo de almacenamiento: MEMORIA, FICHERO_TEXTO, FICHERO_BINARIO, FICHERO_JSON.
+---
 
-Rutas de los archivos si aplica.
+### 🧾 Archivo de Configuración – `AppConfig`
 
-Este enfoque permite cambiar el tipo de persistencia sin modificar el código fuente.
+Define los siguientes parámetros:
 
-⚙️ Asincronía
-Todas las operaciones de acceso a datos son asincrónicas utilizando async/await. Esto evita el bloqueo del hilo principal y mejora el rendimiento, especialmente con archivos o datos extensos.
+- **Tipo de almacenamiento:** `MEMORIA`, `FICHERO_TEXTO`, `FICHERO_BINARIO`, `FICHERO_JSON`.
+- **Rutas de archivos:** Para los métodos de almacenamiento en disco.
 
-🚘 Entidades y Clases Auxiliares
-Vehiculo
-Representa un vehículo con las siguientes propiedades:
+> Permite cambiar el tipo de persistencia sin tocar el código fuente.
 
-Matrícula
+---
 
-Marca
+## ⚙️ Operaciones Asincrónicas
 
-Kilometraje
+Todas las operaciones implementan `async/await` para garantizar un comportamiento **no bloqueante**, lo cual mejora la experiencia del usuario y el rendimiento en sistemas con archivos grandes o acceso frecuente a datos.
 
-Fecha de matriculación
+---
 
-Descripción
+## 🚘 Entidad Principal: `Vehiculo`
 
-Precio
+Modelo que representa los datos de un vehículo:
 
-Propietario
+| Propiedad            | Descripción                     |
+|----------------------|----------------------------------|
+| `Matricula`          | Identificador único del vehículo |
+| `Marca`              | Marca del vehículo               |
+| `Kilometraje`        | Kilómetros recorridos            |
+| `FechaMatriculacion` | Fecha de registro del vehículo   |
+| `Descripcion`        | Observaciones o detalles         |
+| `Precio`             | Valor estimado                   |
+| `Propietario`        | Nombre del propietario           |
+| `DNIPropietario`     | DNI del propietario              |
 
-DNI del propietario
+---
 
-🔁 Flujo de Trabajo
-1. Inicialización
-Al iniciar, se lee AppConfig para determinar el tipo de almacenamiento.
+## 🔁 Flujo de Trabajo
 
-Se crea una instancia concreta de acceso a datos según la configuración.
+### 1. 🏁 Inicialización
+- Al iniciar la aplicación, se lee `AppConfig`.
+- Se crea automáticamente la instancia correspondiente del acceso a datos según el tipo de almacenamiento configurado.
 
-2. Operaciones CRUD
+### 2. 🔧 Operaciones CRUD
 
-Acción	Método	Descripción
-Crear	InsertAsync()	Agrega un nuevo vehículo
+| Acción     | Método                 | Descripción                              |
+|------------|------------------------|------------------------------------------|
+| Crear      | `InsertAsync()`        | Agrega un nuevo vehículo                 |
+| Leer       | `GetAllAsync()`        | Consulta todos los vehículos             |
+| Leer (ID)  | `GetByIdAsync()`       | Busca por matrícula                      |
+| Actualizar | `UpdateAsync()`        | Modifica un vehículo existente           |
+| Eliminar   | `DeleteAsync()`        | Elimina un vehículo según su matrícula   |
 
-Leer	GetAllAsync() / GetByIdAsync()	Consulta vehículos existentes
+> Después de cada operación, los datos se guardan automáticamente en el medio de almacenamiento seleccionado.
 
-Actualizar	UpdateAsync()	Modifica los datos de un vehículo existente
+---
 
-Eliminar	DeleteAsync()	Borra un vehículo por su matrícula
+## ✅ Ventajas del Sistema
 
-Después de cada operación, los cambios se persisten automáticamente en el medio de almacenamiento correspondiente.
+- **🔄 Flexibilidad:** Soporta múltiples formas de almacenamiento según necesidad.
+- **🔌 Desacoplamiento:** Lógica de negocio separada de la persistencia.
+- **📈 Escalabilidad:** Se adapta tanto a entornos pequeños como complejos.
+- **➕ Extensibilidad:** Es fácil agregar nuevos métodos de persistencia.
+- **⚡ Eficiencia:** Uso de asincronía para un rendimiento optimizado.
 
-✅ Ventajas del Sistema
+---
 
-Flexibilidad: Soporte para múltiples formas de almacenamiento.
+## 🧩 Conclusión
 
-Desacoplamiento: Separación entre lógica de negocio y persistencia de datos.
+Este sistema ofrece una solución robusta, limpia y extensible para la gestión de vehículos. Su arquitectura modular y el uso de patrones como Singleton, junto con operaciones asincrónicas y configuración externa, lo convierten en un ejemplo ideal de buenas prácticas en aplicaciones modernas orientadas a la mantenibilidad y escalabilidad.
 
-Escalabilidad: Elige el tipo de almacenamiento según el tamaño o requerimientos del sistema.
+> Perfecto para desarrollos educativos, empresariales o como base para sistemas más complejos.
 
-Extensibilidad: Se pueden agregar nuevos formatos de almacenamiento fácilmente.
+---
 
-Asincronía: Operaciones no bloqueantes que mejoran la eficiencia general.
+¿Te resultó útil este proyecto? ¡Déjale una ⭐ en GitHub o contribuye con mejoras!
+
 
 🧩 Conclusión
 
