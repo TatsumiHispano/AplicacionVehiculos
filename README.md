@@ -114,7 +114,3 @@ Este sistema ofrece una solución robusta, limpia y extensible para la gestión 
 
 ¿Te resultó útil este proyecto? ¡Déjale una ⭐ en GitHub o contribuye con mejoras!
 
-
-🧩 Conclusión
-
-Este sistema ofrece una solución robusta y adaptable para la gestión de vehículos. Su arquitectura desacoplada, unida al uso de patrones de diseño y asincronía, lo convierte en un proyecto ideal para aplicaciones de pequeña a gran escala, fácilmente integrable en entornos modernos.
